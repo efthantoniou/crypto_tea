@@ -138,7 +138,6 @@ void main(void){
         ciphertext = encrypt(message, keys);
         fprintf(fp4,"%x\n", ciphertext);
     }
-    
     end_enc = clock();
     //End of the encryption
     fclose(fp);
