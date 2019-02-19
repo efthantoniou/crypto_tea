@@ -131,7 +131,7 @@ void main(void){
     //Start of the encryption
     start_enc = clock();
     //
-    keys = keys_enc_dec(key); //i calculate it again at line 85 but for the purpose of timing it i do it again.
+    keys = keys_enc_dec(key);
     //https://linux.die.net/man/3/getline  The following code allows us to read a line from a file.
     while((read = getline(&line, &len, fp)) != -1){
         message = (uint16_t)*line;
