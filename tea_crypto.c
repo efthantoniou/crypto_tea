@@ -83,11 +83,12 @@ void main(void){
 
     key = 0xa1e9;
     keys = keys_enc_dec(key);
-/*
+    printf("Erwthma 1o b\n");
     for(i=0;i<5;i++){
         printf("%x\n", keys[i]);
     }
     
+/*
     fp1 = fopen("erwthma1a1.txt", "a");
     fp2 = fopen("erwthma1a2.txt", "a");
 
