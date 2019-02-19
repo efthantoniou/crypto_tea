@@ -151,7 +151,9 @@ void main(void){
     
     while((read = getline(&line, &len, fp5)) != -1){
         ciphertext = (uint16_t)*line;
+        printf("Ciphertext: %x\n",ciphertext);
         message_dec = decrypt(ciphertext, keys);
+        printf("decrypted: %x\n",message_dec);
     }
 
     end_dec = clock();
