@@ -81,12 +81,6 @@ void main(void){
     size_t len = 0;
     ssize_t read;
 
-    key = 0xa1e9;
-    keys = keys_enc_dec(key);
-    printf("Erwthma 1o b\n");
-    for(i=0;i<5;i++){
-        printf("%x\n", keys[i]);
-    }
     
 /*
     fp1 = fopen("erwthma1a1.txt", "a");
@@ -116,6 +110,15 @@ void main(void){
     fclose(fp1);
     fclose(fp2);
 */  
+
+    key = 0xa1e9;
+    keys = keys_enc_dec(key);
+    printf("Erwthma 1o b\n");
+    for(i=0;i<5;i++){
+        printf("%x\n", keys[i]);
+    }
+    
+    
     clock_t start_dec, start_enc, end_dec, end_enc;
     srand(time(NULL));
 
