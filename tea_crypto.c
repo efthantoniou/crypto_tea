@@ -80,7 +80,6 @@ void main(void){
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
-
     
 /*
     fp1 = fopen("erwthma1a1.txt", "a");
@@ -118,7 +117,7 @@ void main(void){
         printf("%x\n", keys[i]);
     }
     
-    
+
     clock_t start_dec, start_enc, end_dec, end_enc;
     srand(time(NULL));
 
