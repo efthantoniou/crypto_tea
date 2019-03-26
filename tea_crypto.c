@@ -5,7 +5,9 @@
 #include <inttypes.h>
 #include <assert.h>
 #include <limits.h>
-#include <math.h>//Antoniou Efthimios 2022201300011 dit13011@uop.gr
+#include <math.h>
+#include <unistd.h>
+//Antoniou Efthimios 2022201300011 dit13011@uop.gr
 //Makes the permutation that is applied to the key.
 uint16_t key_permutation(uint16_t key) {
     uint16_t new = key & 0xF00F;
@@ -73,91 +75,87 @@ uint16_t decrypt(uint16_t cipher, uint16_t *keys){
 }
 
 void main(void){
-    uint16_t key, message = 0x3412, ciphertext, message_dec, msg_rnd;
+    uint16_t key, message, ciphertext, message_dec, msg_rnd;
     uint16_t *keys = NULL, *keys_1a = NULL, key_2a, c_1a, c_2a;
     int i;
-    FILE *fp, *fp1, *fp2, *fp3, *fp4, *fp5;
+    FILE *fp1, *fp2, *fp3, *fp4, *fp5;
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
-    
-/*
-    fp1 = fopen("erwthma1a1.txt", "a");
-    fp2 = fopen("erwthma1a2.txt", "a");
+    int limit_16 = 65536;
+
+    fp1 = fopen("erwthma1a1.txt", "w");
+    fp2 = fopen("erwthma1a2.txt", "w");
 
     keys_1a =  keys_enc_dec(0x0000);
-    message = 0;
+    message =  0x0000;
     //In order to have all the possible messages that the 16-bit supports.
-    for(i=0;i<=UINT_MAX;i++){
+    for(i=0;i<limit_16;i++){
         c_1a =  encrypt(message, keys_1a);
         fprintf(fp1, "M = %4x C = %4x\n", message, c_1a);
         message++;
     }
-    printf("Ok1\n");
-
-    message = 0;
-    key_2a = 0;
+    printf("Erwthma 1.a.1 Done\n");
+    fclose(fp1);
+    message = 0x000;
+    key_2a = 0x0000;
     //In order to have all the possible keys that the 16-bit supports.
-    for(i=0;i<=UINT_MAX;i++){
+    for(i=0;i<limit_16;i++){
         c_2a = encrypt(message, keys_enc_dec(key_2a));
         fprintf(fp2, "K = %4x C = %4x\n", key_2a, c_2a);
         key_2a++;
     }
-
-    printf("Ok2\n");
-
-    fclose(fp1);
     fclose(fp2);
-*/  
+    printf("Erwthma 1.a.2 Done\n");
 
     key = 0xa1e9;
     keys = keys_enc_dec(key);
-    printf("Erwthma 1o b\n");
-    for(i=0;i<5;i++){
-        printf("%x\n", keys[i]);
+    printf("Erwthma 1.b\n");
+    for(i=1;i<5;i++){
+        printf("k%1d: %4x\n",i ,keys[i]);
     }
-    
-
+    printf("Generating random messages\n");
     clock_t start_dec, start_enc, end_dec, end_enc;
     srand(time(NULL));
-
     //Creates 2 ^ 26 random messages and then store them to a file.
-    fp3 = fopen("random.txt","a");
+    fp3 = fopen("random.txt","w");
     for(i=0;i<pow(2, 26);i++){
-        msg_rnd = (uint16_t)(((double) rand()/ (double)(RAND_MAX + 1.0)) * UINT_MAX);
+        msg_rnd = (uint16_t)(((double) rand()/ (double)(RAND_MAX + 1.0)) * limit_16);
         fprintf(fp3,"%x\n", msg_rnd);
     }
     fclose(fp3);
-    fp =  fopen("random.txt", "r");
-    fp4 = fopen("random_c.txt","a");
+    fp3 = fopen("random.txt","r");
+    fp4 = fopen("random_c.txt","w");
+    key = 0xa1e9;
+
     //Start of the encryption
+    printf("*Encryption*\n");
     start_enc = clock();
-    //
     keys = keys_enc_dec(key);
     //https://linux.die.net/man/3/getline  The following code allows us to read a line from a file.
-    while((read = getline(&line, &len, fp)) != -1){
+    while((read = getline(&line, &len, fp3)) != -1){
         message = (uint16_t)*line;
         ciphertext = encrypt(message, keys);
         fprintf(fp4,"%x\n", ciphertext);
     }
     end_enc = clock();
-    //End of the encryption
-    fclose(fp);
+    fclose(fp3);
     fclose(fp4);
+    //End of the encryption
     printf("Encryption took: %f ticks or ticks per second %f\n",(float)(end_enc - start_enc), (float)(end_enc - start_enc)/CLOCKS_PER_SEC);
 
+    fp4= fopen("random_c.txt","r");
+    fp5 = fopen("random_d.txt", "w");
     //Start of the decryption
-    fp5 = fopen("random_c.txt", "r");
+    printf("*Decryption*\n");
     start_dec = clock();
     
-    while((read = getline(&line, &len, fp5)) != -1){
-        ciphertext = (uint16_t)*line;
-        printf("Ciphertext: %x\n",ciphertext);
+    while((read = getline(&line, &len, fp4)) != -1){
         message_dec = decrypt(ciphertext, keys);
-        printf("decrypted: %x\n",message_dec);
+        fprintf(fp5,"%x\n", message_dec);
     }
-
     end_dec = clock();
+    fclose(fp4);
     fclose(fp5);
     //End of the decryption
     printf("Decryption took: %f ticks or ticks per second %f\n",(float)(end_dec - start_dec), (float)(end_dec - start_dec)/CLOCKS_PER_SEC);
